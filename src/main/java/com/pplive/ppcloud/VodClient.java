@@ -7,6 +7,8 @@ import com.pplive.ppcloud.quick.VodCategoryManager;
 import com.pplive.ppcloud.quick.VodChannelMannager;
 import com.pplive.ppcloud.quick.model.VodCategoryInfoModel;
 import com.pplive.ppcloud.quick.model.VodChannelInfoModel;
+import com.pplive.ppcloud.request.VodChannelCreateRequest;
+import com.pplive.ppcloud.response.VodChannelUploadResponse;
 import com.pplive.ppcloud.vod.VodManager;
 
 import java.util.List;
@@ -114,6 +116,22 @@ public class VodClient {
      */
     public void updateCategory(Long categoryId, String finalName){
         VodCategoryManager.getInstance().updateCategory(categoryId,finalName);
+    }
+
+    /**
+     * 创建点播
+     * @param filePath : 点播文件路径
+     * @param request: 创建点播的信息
+     *         request.getName()    : 点播名称，非空
+     *   其它可设置信息：
+     *         request.getCoverImg() : 封面地址
+     *         request.getSummary() ： 视频文件简介
+     *         request.getCategoryId() : 点播保存到哪个分类下（为空保存到默认分类）
+     * @return
+     *         VodChannelCreateResponse ：PP云点播信息，其中包含upToken
+     */
+    public VodChannelUploadResponse createVod(String filePath, VodChannelCreateRequest request){
+        return VodManager.getInstance().createVod(filePath, request);
     }
 
     /**

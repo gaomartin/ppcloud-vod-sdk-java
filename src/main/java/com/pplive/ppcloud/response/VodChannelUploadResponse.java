@@ -56,7 +56,7 @@ public class VodChannelUploadResponse extends BaseResponse{
     /**
      *文件id
      */
-    private Integer fid;
+    private Long fid;
     /**
      *视频id
      */
@@ -82,6 +82,12 @@ public class VodChannelUploadResponse extends BaseResponse{
      */
     @JsonProperty("up_token")
     private String upToken;
+
+    /**
+     * 图片上传地址
+     */
+    @JsonProperty("pic_upload_url")
+    private String picUploadUrl;
 
     public Integer getId() {
         return id;
@@ -171,11 +177,11 @@ public class VodChannelUploadResponse extends BaseResponse{
         this.coverImage = coverImage;
     }
 
-    public Integer getFid() {
+    public Long getFid() {
         return fid;
     }
 
-    public void setFid(Integer fid) {
+    public void setFid(Long fid) {
         this.fid = fid;
     }
 
@@ -217,5 +223,13 @@ public class VodChannelUploadResponse extends BaseResponse{
 
     public void setUpToken(String upToken) {
         this.upToken = upToken;
+    }
+
+    public String getPicUploadUrl() {
+        return picUploadUrl;
+    }
+
+    public void setPicUploadUrl(String picUploadUrl) {
+        this.picUploadUrl = picUploadUrl;
     }
 }

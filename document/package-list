@@ -1,9 +1,11 @@
 com.pplive.ppcloud
-com.pplive.ppcloud.vod
 com.pplive.ppcloud.auth
+com.pplive.ppcloud.constant
+com.pplive.ppcloud.exception
 com.pplive.ppcloud.http
 com.pplive.ppcloud.quick
 com.pplive.ppcloud.quick.model
 com.pplive.ppcloud.request
 com.pplive.ppcloud.response
 com.pplive.ppcloud.utils
+com.pplive.ppcloud.vod

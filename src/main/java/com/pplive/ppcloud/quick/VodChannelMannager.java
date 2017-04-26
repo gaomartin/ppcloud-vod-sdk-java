@@ -22,6 +22,7 @@ public class VodChannelMannager {
         private static VodChannelMannager instance = new VodChannelMannager();
     }
 
+
     /**
      * 获取点播视频的详细信息
      * @param channelWebId : 视频webId

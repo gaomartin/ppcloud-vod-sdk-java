@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -31,9 +33,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.security.Security;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -55,6 +55,7 @@ public class HttpClientManager {
     private static final String defaultCharsetStr = "UTF-8";
     private static final Charset defaultCharset = Charset.forName(defaultCharsetStr);
     private static final String jsonContentType = "application/json; charset=UTF-8";
+    private static final String urlFormContentType = "application/x-www-form-urlencoded";
     private static final Integer BUFFER_SIZE = Integer.valueOf(4048);
 
     public HttpClientManager(int connectionTimeOut, int soTimeOut) {
@@ -89,6 +90,10 @@ public class HttpClientManager {
 
     private void addContentType(HttpRequestBase request, String contentType) {
         request.addHeader("Content-Type", contentType);
+    }
+
+    public String execGetRequest(String url) {
+        return execGetRequestWithParamsAndHeaders(url, null, null, null);
     }
 
     public String execGetRequestWithHeader(String url, Map<String, String> header) {
@@ -185,18 +190,81 @@ public class HttpClientManager {
     }
 
     public <T> String execPostRequestWithHeaders(URI uri, Map<String, String> headers, T obj) {
-        return execPostRequestWithHeaders(uri, headers, obj, null);
+        return execPostRequest(uri, headers, obj, null);
     }
 
     public <T> String execPostRequestWithHeaders(URI uri, Map<String, String> headers, T obj, String proxyHost, int proxyPort) {
         if (StringUtils.isEmpty(proxyHost) || proxyPort <= 0) {
-            return execPostRequestWithHeaders(uri, headers, obj);
+            return execPostRequest(uri, headers, obj, null);
         } else {
-            return execPostRequestWithHeaders(uri, headers, obj, new HttpProxyConfig(proxyHost, proxyPort));
+            return execPostRequest(uri, headers, obj, new HttpProxyConfig(proxyHost, proxyPort));
         }
     }
 
-    public <T> String execPostRequestWithHeaders(URI uri, Map<String, String> headers, T obj, HttpProxyConfig proxyConfig) {
+    public <T> String execPostRequest(URI uri, Map<String, String> headers, T obj, HttpProxyConfig proxyConfig) {
+        Map<String, String> params = null;
+        if (obj != null) {
+            params = JsonUtils.objectToMap(obj);
+        }
+        return execPostRequest(uri,headers,params,proxyConfig);
+    }
+
+    public  String execPostRequest(URI uri, Map<String, String> headers, Map<String, String> params, HttpProxyConfig proxyConfig) {
+        HttpPost request = new HttpPost(uri);
+        addContentType(request, urlFormContentType);
+
+        if(headers != null && !headers.isEmpty()) {
+            Iterator<?> e = headers.entrySet().iterator();
+
+            while(e.hasNext()) {
+                Entry<?, ?> json = (Entry<?, ?>)e.next();
+                request.addHeader((String)json.getKey(), (String)json.getValue());
+            }
+        }
+
+        List<NameValuePair> postParameters = new LinkedList<NameValuePair>();
+        if (params != null && !params.isEmpty()) {
+            postParameters = new ArrayList<NameValuePair>(params.size());
+            for (Entry<String, String> entry : params.entrySet()) {
+                postParameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+            }
+        }
+
+        String res;
+        try {
+            request.setEntity(new UrlEncodedFormEntity(postParameters));
+            if (proxyConfig != null) {
+                HttpHost proxy = new HttpHost(proxyConfig.getProxyHost(), proxyConfig.getProxyPort());
+                this.httpClient.getParams().setParameter(ConnRouteParams.DEFAULT_PROXY, proxy);
+            }
+            HttpResponse response = this.httpClient.execute(request);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity = response.getEntity();
+            if(status != 200) {
+                String reason = null;
+                if(entity != null) {
+                    reason = EntityUtils.toString(entity, defaultCharset);
+                    System.out.println("post error, status:"+status+", resonpse:"+reason+", url:"+uri);
+                } else {
+                    System.out.println("post error, status:"+status+", url:"+uri);
+                }
+
+                throw new RuntimeException(String.format("http post error. url: %s, reason: %s", uri, reason));
+            }
+
+            res = EntityUtils.toString(entity, defaultCharset);
+        } catch (IOException e) {
+            throw new RuntimeException("http post error. url: " + uri, e);
+        } catch (RuntimeException runtimeExeption) {
+            throw new RuntimeException("http post error. url: " + uri, runtimeExeption);
+        } finally {
+            request.abort();
+        }
+
+        return res;
+    }
+
+    public <T> String execJsonPostRequestWithHeaders(URI uri, Map<String, String> headers, T obj, HttpProxyConfig proxyConfig) {
         HttpPost request = new HttpPost(uri);
         addContentType(request, jsonContentType);
         if(headers != null && !headers.isEmpty()) {
@@ -244,6 +312,7 @@ public class HttpClientManager {
 
         return res;
     }
+
 
     public DefaultHttpClient getHttpClient() {
         return this.httpClient;

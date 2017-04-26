@@ -7,13 +7,13 @@ package com.pplive.ppcloud.utils;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author chaogao
@@ -100,6 +100,22 @@ public class JsonUtils {
 		}
         return list;
 	}
+
+    public static Map<String,String > objectToMap(Object object) {
+        Map<String,String > result = new HashMap<String, String>();
+        ObjectNode objectNode = objectMapper.valueToTree(object);
+        Iterator<Map.Entry<String, JsonNode>> items = objectNode.fields();
+
+        while (items.hasNext()){
+            Map.Entry<String,JsonNode> pair = items.next();
+            JsonNode value = pair.getValue();
+            if (!value.isNull()) {
+                result.put(pair.getKey(),pair.getValue().asText());
+            }
+        }
+
+        return result;
+    }
 
     public static ObjectMapper getObjectMapper() {
         return objectMapper;

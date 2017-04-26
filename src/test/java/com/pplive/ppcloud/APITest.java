@@ -87,9 +87,11 @@ public class APITest extends TestCase{
     public void testGetChannelList() throws Exception {
         VodChannelListRequest request = new VodChannelListRequest();
         VodChannelListResponse response = null;
-        request.setCategoryId(testCategoryId);
+        //request.setCategoryId(testCategoryId);
         request.setPageNum(1);
         request.setPageSize(20);
+        request.setChannelType("2");
+        request.setSkipEncode(0);
 
         response = VodManager.getInstance().getChannelList(request);
         assertNotNull(response);
@@ -99,11 +101,15 @@ public class APITest extends TestCase{
 
     /**
      *
-     * Method: uploadChannel(VodChannelUploadRequest request)
+     * Method: createVod(String filePath, String fileName, Integer categoryId)
      *
      */
-    public void testUploadChannel() throws Exception {
-
+    public void testCreateVod() throws Exception {
+        String filePath = "D:\\video\\out_video.mp4";
+        VodChannelCreateRequest request = new VodChannelCreateRequest();
+        request.setName("vodName");
+        request.setSummary("my test vod name");
+        VodManager.getInstance().createVod(filePath,request);
     }
 
     /**

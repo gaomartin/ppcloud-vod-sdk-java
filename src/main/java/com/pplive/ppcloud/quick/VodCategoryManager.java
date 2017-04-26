@@ -186,6 +186,7 @@ public class VodCategoryManager {
         request.setCategoryId(categoryId);
         request.setPageNum(pageNum);
         request.setPageSize(pageSize);
+        request.setChannelType("1");
 
         response = VodManager.getInstance().getChannelList(request);
         if (response == null || !response.getErr().equals("0")){
@@ -205,6 +206,7 @@ public class VodCategoryManager {
         request.setCategoryId(categoryId);
         request.setPageNum(1);
         request.setPageSize(1);
+        request.setChannelType("1");
 
         response = VodManager.getInstance().getChannelList(request);
         if (response == null || !response.getErr().equals("0")){

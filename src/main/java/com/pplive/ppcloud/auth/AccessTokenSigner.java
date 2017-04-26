@@ -5,8 +5,8 @@
 
 package com.pplive.ppcloud.auth;
 
-import com.pplive.ppcloud.AuthConstants;
-import com.pplive.ppcloud.CharsetConstants;
+import com.pplive.ppcloud.constant.AuthConstants;
+import com.pplive.ppcloud.constant.CharsetConstants;
 import com.pplive.ppcloud.utils.HmacSHA1Util;
 import com.pplive.ppcloud.utils.JsonUtils;
 import com.pplive.ppcloud.utils.LogUtils;
@@ -17,8 +17,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.UUID;
-
-import static com.pplive.ppcloud.CharsetConstants.*;
 
 
 /**

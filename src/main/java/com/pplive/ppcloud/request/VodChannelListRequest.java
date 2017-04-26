@@ -12,6 +12,16 @@ public class VodChannelListRequest {
     @JsonProperty("category_id")
     private Long categoryId;
     /**
+     *  视频类型：1，点播；2：直播
+     */
+    @JsonProperty("channel_type")
+    private String channelType;
+    /**
+     *  是否跳过压制：1，跳过（即短视频）；0，不跳过（默认）
+     */
+    @JsonProperty("skip_encode")
+    private Integer skipEncode;
+    /**
      *  视频webid
      */
     @JsonProperty("channel_web_id")
@@ -57,6 +67,22 @@ public class VodChannelListRequest {
      *  1   ： 过滤正常视频
      */
     private String  abnormalLive;
+
+    public Integer getSkipEncode() {
+        return skipEncode;
+    }
+
+    public void setSkipEncode(Integer skipEncode) {
+        this.skipEncode = skipEncode;
+    }
+
+    public String getChannelType() {
+        return channelType;
+    }
+
+    public void setChannelType(String channelType) {
+        this.channelType = channelType;
+    }
 
     public Long getCategoryId() {
         return categoryId;

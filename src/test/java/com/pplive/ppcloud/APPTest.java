@@ -1,6 +1,8 @@
 package com.pplive.ppcloud;
 
 import com.pplive.ppcloud.quick.model.VodCategoryInfoModel;
+import com.pplive.ppcloud.request.VodChannelCreateRequest;
+import com.pplive.ppcloud.response.VodChannelUploadResponse;
 import com.pplive.ppcloud.utils.LogUtils;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -22,8 +24,8 @@ public class APPTest extends TestCase {
 
     public APPTest(){
         // 0. 初始化Client
-        String accessKey = "robertpicyu";//"替换您的 AccessKey";
-        String secretKey = "robertpicyu";//"替换您的 SecretKey";
+        String accessKey = "xxxxxxxxxx";//"替换您的 AccessKey";
+        String secretKey = "xxxxxxxxxx";//"替换您的 SecretKey";
         vodClient = new VodClient(accessKey, secretKey);
         //vodClient.setProxyConfig("10.200.12.243",80);
     }
@@ -108,6 +110,13 @@ public class APPTest extends TestCase {
         vodClient.disableVodChannel(testVodChannelWebId);
     }
 
+    public void testCreateVod() throws Exception {
+        VodChannelCreateRequest request = new VodChannelCreateRequest();
+        request.setName("SDK_vodName");
+        request.setSummary("my test vod name");
+        VodChannelUploadResponse result = vodClient.createVod("D:\\video\\out_video.mp4", request);
+    }
+
     /**
      * Method: updateVodChannelName(String channelWebId, String channelName)
      */
@@ -132,4 +141,5 @@ public class APPTest extends TestCase {
     public static Test suite() {
         return new TestSuite(APPTest.class);
     }
-} 
+
+}

@@ -2,6 +2,7 @@ package com.pplive.ppcloud;
 
 import com.pplive.ppcloud.quick.model.VodCategoryInfoModel;
 import com.pplive.ppcloud.quick.model.VodChannelInfoModel;
+import com.pplive.ppcloud.request.VodChannelCreateRequest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -19,8 +20,8 @@ public class VodClientTest extends TestCase {
         String channelWebId = "0a2dnq6apqGkmqiL4K2fm6iWp-ydoKyZpqSh";
 
         // 0. 初始化Client
-        String accessKey = "robertpicyu";//"替换您的 AccessKey";
-        String secretKey = "robertpicyu";//"替换您的 SecretKey";
+        String accessKey = "xxxxxxxxxxxx";//"替换您的 AccessKey";
+        String secretKey = "xxxxxxxxxxxx";//"替换您的 SecretKey";
         VodClient vodClient = new VodClient(accessKey, secretKey);
         vodClient.setProxyConfig("http://svc.pptvyun.ppqa.com",80);
 
@@ -33,19 +34,20 @@ public class VodClientTest extends TestCase {
         //2、修改视频分类信息
         vodClient.updateCategory(category.getId(), categoryName + "-updated");
 
-        //获取某个分类下视频的列表
+        //3、获取某个分类下视频的列表
         vodClient.getVodChannelList(category.getId());
 
-        //3、上传视频
-
+        //3、创建点播（得到上传upToken）
+        VodChannelCreateRequest request = new VodChannelCreateRequest();
+        request.setName("vodName");
+        request.setSummary("my test vod name");
+        vodClient.createVod("D://xxxx.mp4", request);
 
         //4、获取视频信息
         VodChannelInfoModel vodChannel = vodClient.getVodChannelInfo(channelWebId);
 
         //4、修改视频信息
         vodClient.updateVodChannelName(vodChannel.getChannelWebId(), vodChannel.getChannelName() + "updated!");
-
-        //5、获取playStr
 
         //6、删除视频
         vodClient.deleteVodChannel(channelWebId);
